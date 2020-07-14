@@ -1,0 +1,25 @@
+{
+    "name": "Nuclechater",
+    "short_name": "Nuclechater",
+    "icons": [
+        {
+            "src": "./img/Nuclechater.png",
+            "type": "image/png",
+            "sizes": "225x225"
+        }
+    ],
+    "start_url": "./index.html",
+    "scope": ".",
+    "display": "fullscreen",
+    "orientation": "portrait-primary",
+    "background_color": "#CCCCFF",
+    "theme_color": "#000000",
+    "description": "online chat app",
+    "dir": "ltr",
+    "lang": "zh-Hant-TW",
+    "permissions": {
+        "desktop-notification": {
+            "description": "允許應用程式通知"
+        }
+    }
+}
