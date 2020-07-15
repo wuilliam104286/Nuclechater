@@ -1,6 +1,7 @@
 <html lang="zh-hant">
 
 <head>
+  <title>Nuclechater</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/socket.io/socket.io.js"></script>
@@ -29,6 +30,9 @@
         <li class="nav-item">
           <a id="online" class="nav-link text-white"></a>
         </li>
+        <li class="nav-item">
+          <button id="install" class="btn btn-success" style="display:none;" onclick="openCreatePostModal()">安裝</button>
+        </li>
       </ul>
     </nav>
     <div id="chat" class="h-100"></div>
@@ -46,7 +50,6 @@
     let name;
     let Ip;
     let down = true;
-    let enter = 0;
     let first_enter=true;
 
     $.getJSON("https://api.ipify.org?format=json", function (data) {
@@ -64,6 +67,10 @@
       socket.emit('ip', {
         'ip': Ip,
       });
+    });
+
+    socket.on('script', () => {
+      window.location.reload();
     });
 
     socket.on('chat', function (data) {
@@ -95,15 +102,13 @@
         $('#user').html(name);
       }
       if (data.online) {
-        $('#online').html('在線人數: '+data.online);
+        $('#online').html('在線人數: '+data.online+'    ');
       }
     });
 
     $(document).ready(function () {
       $('#txt').keydown(function (e) {
         if (e.keyCode === 13) {
-          if (enter === 3) openCreatePostModal();
-          enter++;
           let txt = $("#txt").val();
           if (txt === "") return;
           if (txt.length > 300) return alert("不能多於300個字(" + txt.length + "/300)");
@@ -131,8 +136,6 @@
     }
 
     document.getElementById("submit").onclick = function (e) {
-      if (enter === 3) openCreatePostModal();
-      enter++;
       let txt = $("#txt").val();
       if (txt === "") return;
       if (txt.length > 300) return alert("不能多於300個字(" + txt.length + "/300)");
@@ -145,7 +148,7 @@
 
     var deferredPrompt;
     window.addEventListener('beforeinstallprompt', function (event) {
-      console.log('安裝視窗跳出來前 阻止它!!');
+      $("#install").show();
       event.preventDefault();
       deferredPrompt = event;
       return false;
@@ -154,7 +157,6 @@
     function openCreatePostModal() {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        console.log('b');
         deferredPrompt.userChoice.then(function (choiceResult) {
           console.log(choiceResult.outcome);
           if (choiceResult.outcome == 'dismissed')
