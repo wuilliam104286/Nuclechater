@@ -37,6 +37,7 @@ let reapet = false;
 let time;
 let asiaTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" });
 let Today = new Date((new Date(asiaTime)).toISOString());
+console.log(Today)
 let date_ = Today.getFullYear() + '/' + (Today.getMonth() + 1) + '/' + Today.getDate() + '     ' + Today.getHours() + ':' + Today.getMinutes();
 const random = Math.floor(Math.random() * (4294967 - 42949 + 1) + 42949);
 fs.readFile('save.json', 'utf8', function readFileCallback(err, data) {
