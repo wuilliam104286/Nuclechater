@@ -34,11 +34,11 @@ let script_detect = [];
 let count = 0;
 let news = false;
 let reapet = false;
-let Today = new Date().toLocaleString('en-US', {
-  timeZone: 'Asia/Taipei'
-});
 let time;
-let date_ = "" + Today.getFullYear() + "/" + (Today.getMonth() + 1) + "/" + Today.getDate() + "    " + Today.getHours() + ":" + Today.getMinutes();
+let asiaTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" });
+let Today = new Date((new Date(asiaTime)).toISOString());
+console.log(Today)
+let date_ = Today.getFullYear() + '/' + (Today.getMonth() + 1) + '/' + Today.getDate() + '     ' + Today.getHours() + ':' + Today.getMinutes();
 const random = Math.floor(Math.random() * (4294967 - 42949 + 1) + 42949);
 fs.readFile('save.json', 'utf8', function readFileCallback(err, data) {
   if (err) {
@@ -74,9 +74,7 @@ serv_io.sockets.on('connection', function (socket) {
   });
   setInterval(() => {
     socket.emit('chat', { "chat": content, "user": false, "online": serv_io.engine.clientsCount });
-    Today = new Date().toLocaleString('en-US', {
-      timeZone: 'Asia/Taipei'
-    });
+    Today = new Date();
     time = Today.getHours() + ":" + Today.getMinutes().toString().padStart(2, '0');
   }, 500);
   // 接收來自於瀏覽器的資料
@@ -91,6 +89,7 @@ serv_io.sockets.on('connection', function (socket) {
       for (let i = 1; i < script_detect.length; i++) script_detect[ip] = 0;
     }
     if (script_detect[ip] > 100) return socket.emit('script', { "type": "bot" });
+    times();
     content.push({ "name": userlist[ip], "text": txt, "time": time });
     if (content.length > 1000) content.shift();
     socket.emit('chat', { "chat": content, "user": false, "news": news });
@@ -112,12 +111,15 @@ serv_io.sockets.on('connection', function (socket) {
     script_detect[socket.id] = 0;
     userlist[txt] = (parseInt(txt) + random).toString(35);
     console.log(userlist[txt] + "加入了聊天室");
-    Today = new Date().toLocaleString('en-US', {
-      timeZone: 'Asia/Taipei'
-    });
-    time = Today.getHours() + ":" + Today.getMinutes().toString().padStart(2, '0');
+    times();
     content.push({ "name": "伺服器", "text": userlist[txt] + "加入了聊天室", "time": time });
     socket.emit('chat', { "chat": content, "user": userlist[txt], "news": news });
     if (content.length > 1000) content.shift();
   });
 });
+function times() {
+  asiaTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" });
+  Today = new Date((new Date(asiaTime)).toISOString());
+  time = Today.getHours() + ":" + Today.getMinutes().toString().padStart(2, '0');
+  //hours = Today.getHours() + ":" + Today.getMinutes().toString().padStart(2, '0');
+}
